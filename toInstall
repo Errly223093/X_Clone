@@ -1,0 +1,13 @@
+npm init -y
+npm i express
+npm i -D typescript @types/express @types/node
+npx tsc --init 
+"outDir": "dist"
+npm i -D nodemon ts-node
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.ts",
+    "dev": "nodemon --watch \"*.ts\" --exec \"ts-node\" index.ts"
+  },
+app.use(express.json());  // json type 인식
+app.use(express.urlencoded());
