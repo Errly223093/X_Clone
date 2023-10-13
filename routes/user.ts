@@ -1,9 +1,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
-
 const client = new PrismaClient();
 
 router.post("/", async (req, res) => {
@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
 
     if (!account || !password) {
       return res.status(400).json({
-        ok: true,
+        ok: false,
         message: "Not exist data.",
       });
     }
@@ -39,55 +39,11 @@ router.post("/", async (req, res) => {
       },
     });
 
-    return res.json({
-      ok: true,
-      user: newUser,
-    });
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      ok: false,
-      message: "Server error.",
-    });
-  }
-});
-
-router.post("/test", async (req, res) => {
-  try {
-    const { account, password } = req.body;
-
-    if (!account || !password) {
-      return res.status(400).json({
-        ok: false,
-        message: "Not exist data.",
-      });
-    }
-
-    const user = await client.user.findUnique({
-      where: {
-        account,
-      },
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        ok: false,
-        message: "Not exist user.",
-      });
-    }
-
-    const result = bcrypt.compareSync(password, user.password);
-
-    if (!result) {
-      return res.status(400).json({
-        ok: false,
-        message: "Not correct password.",
-      });
-    }
+    const token = jwt.sign({ account }, process.env.JWT_SECRET_KEY!); // type script 사용 중이기에, 항상 값이 존재한다는 의미의 ! 붙여줌.
 
     return res.json({
       ok: true,
+      token,
     });
   } catch (error) {
     console.error(error);
