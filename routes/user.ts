@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 const client = new PrismaClient();
 
+// 유저 생성
 router.post("/", async (req, res) => {
   try {
     const { account, password } = req.body;
@@ -32,7 +33,7 @@ router.post("/", async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    const newUser = await client.user.create({
+    await client.user.create({
       data: {
         account,
         password: hashedPassword,

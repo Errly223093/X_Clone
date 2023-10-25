@@ -1,4 +1,4 @@
-import express, { NextFunction } from "express";
+import express, { NextFunction, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
