@@ -12,21 +12,38 @@ generator client {
 }
 
 model User {
-  id          Int         @id         @default(autoincrement())
-  createdAt   DateTime                @default(now())
-  updatedAt   DateTime                @updatedAt
-  account     String      @unique
-  password    String
-  posts       Post[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  account   String    @unique
+  password  String
+  posts     Post[]
+  Comment   Comment[]
 }
 
 model Post {
-  id          Int         @id         @default(autoincrement())
-  createdAt   DateTime                @default(now())
-  updatedAt   DateTime                @updatedAt
-  content     String
-  userId      Int
-  user        User        @relation(fields: [userId], references: [id])
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  content   String
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  Comment   Comment[]
+
+  // relation mode 가 prisma 라면, index 옵션이 필요
+  @@index([userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
 
   @@index([userId])
+  @@index([postId])
 }
